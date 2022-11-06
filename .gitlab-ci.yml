@@ -1,11 +1,23 @@
 include:
   - template: Terraform/Base.gitlab-ci.yml
 
+rules:
+  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    when: always
+  - if: $CI_COMMIT_BRANCH == "feat/continuous-integration"
+    when: always
+  - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+    when: manual
+
 stages:
   - init
   - validate
   - build
   - deploy
+
+variables:
+  AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+  AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
 
 init:
   extends: .init
