@@ -1,0 +1,45 @@
+name: 🖥️ DevXP Deployment Pipeline 🚀
+on:
+  push:
+    branches:
+      - main
+      - "**/**.tf"
+      - "**/*.py"
+      - .github/workflows/devxp.yml
+jobs:
+
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'Install Terraform 🟪'
+      uses: hashicorp/setup-terraform@v1
+
+    - name: 'checkout 🕵'
+      id: 'checkout'
+      uses: actions/checkout@v2
+
+    - name: 'Cache Terraform State 💾'
+      id: cache-state-get
+      uses: actions/cache@v3
+      with:
+        path: terraform.tfstate
+        key: ${{ runner.os }}-state
+
+    - name: 'debug'
+      run: ls -al && pwd
+
+
+
+    - name: 'Setup terraform 🟪'
+      run: 'AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} terraform init -migrate-state -force-copy'
+
+    - name: 'Cache Terraform State 💾'
+      id: cache-state-set
+      uses: actions/cache@v3
+      with:
+        path: terraform.tfstate
+        key: ${{ runner.os }}-state
+
+    - name: 'Terraform Apply 🚀'
+      run: 'AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} terraform apply -auto-approve'
