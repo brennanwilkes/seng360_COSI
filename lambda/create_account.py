@@ -3,7 +3,7 @@ from common import *
 
 def lambda_handler(event, context):
     """
-    Handler for calls to https://c11ipox830.execute-api.us-west-2.amazonaws.com/seng360/create_account
+    Handler for calls to https://ads5u2p9gb.execute-api.us-west-2.amazonaws.com/seng360/create_account
     """
     body = event.get("body")
     if type(body) is str:
