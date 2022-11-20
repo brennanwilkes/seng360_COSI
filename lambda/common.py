@@ -3,6 +3,7 @@ import json
 import logging
 from hashlib import sha256
 from datetime import datetime
+from dateutil import parser
 
 # Third party imports
 import boto3
@@ -43,14 +44,20 @@ def server_error(message):
 
 
 def generate_token():
-    return sha256(str(datetime.utcnow()) + 'super spicy secret :)',  usedforsecurity=True).hexdigest()
+    return sha256((str(datetime.utcnow()) + 'super spicy secret :)').encode('ascii'),  usedforsecurity=True).hexdigest()
 
 
 def verify_token(username, token):
-    item = dynamodb_table.get_item(Key={ "userId": username }).get('Item')
-    t: datetime = datetime.strptime(item.get('tokenCreated'))
-    if (datetime.utcnow() - t).total_seconds() < 86400 and item.get('token') == token:
-        # if cookie is younger than 24 hours
-        return True
+    try:
+        item = dynamodb_table.get_item(Key={ "userId": username }).get('Item')
+        t: datetime = parser.parse(item.get('tokenCreated'))
+        diff = (datetime.utcnow() - t).total_seconds()
+        logger.info(f'token creation time: {t}')
+        logger.info(f'diff: {diff}')
+        if (datetime.utcnow() - t).total_seconds() < 86400 and item.get('token') == token:
+            # if cookie is younger than 24 hours
+            return True
+    except:
+        return False
     
     return False

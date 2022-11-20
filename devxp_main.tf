@@ -242,7 +242,8 @@ data "aws_iam_policy_document" "seng360DynamoDb_iam_policy_document" {
 
 data "archive_file" "lambda-send-message-archive" {
   type        = "zip"
-  source_file = "lambda/send_message.py"
+    source_dir = "lambda/"
+  excludes = setsubtract(fileset("lambda/", "*"), ["send_message.py", "common.py"])
   output_path = "outputs/send_message.py.zip"
 }
 
@@ -256,7 +257,8 @@ data "aws_iam_policy_document" "lambda-send-message-vpc-policy-document" {
 
 data "archive_file" "lambda-get-messages-archive" {
   type        = "zip"
-  source_file = "lambda/get_messages.py"
+    source_dir = "lambda/"
+  excludes = setsubtract(fileset("lambda/", "*"), ["get_messages.py", "common.py"])
   output_path = "outputs/get_messages.py.zip"
 }
 
@@ -270,7 +272,8 @@ data "aws_iam_policy_document" "lambda-get-messages-vpc-policy-document" {
 
 data "archive_file" "lambda-delete-account-archive" {
   type        = "zip"
-  source_file = "lambda/delete_account.py"
+    source_dir = "lambda/"
+  excludes = setsubtract(fileset("lambda/", "*"), ["delete_account.py", "common.py"])
   output_path = "outputs/delete_account.py.zip"
 }
 
@@ -284,7 +287,8 @@ data "aws_iam_policy_document" "lambda-delete-account-vpc-policy-document" {
 
 data "archive_file" "lambda-create-account-archive" {
   type        = "zip"
-  source_file = "lambda/create_account.py"
+  source_dir = "lambda/"
+  excludes = setsubtract(fileset("lambda/", "*"), ["create_account.py", "common.py"])
   output_path = "outputs/create_account.py.zip"
 }
 
