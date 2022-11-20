@@ -1,4 +1,4 @@
-# SENG 360 - Encrypted Messaging Server
+# SENG360 - Encrypted Messaging Client
 
 
 
@@ -15,14 +15,14 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 
 ```
 cd existing_repo
-git remote add origin https://gitlab.csc.uvic.ca/courses/2022091/SENG360_COSI/assignments/brennanmcmicking/seng-360-encrypted-messaging-server.git
+git remote add origin https://gitlab.csc.uvic.ca/courses/2022091/SENG360_COSI/assignments/brennanmcmicking/seng360-encrypted-messaging-client.git
 git branch -M main
 git push -uf origin main
 ```
 
 ## Integrate with your tools
 
-- [ ] [Set up project integrations](https://gitlab.csc.uvic.ca/courses/2022091/SENG360_COSI/assignments/brennanmcmicking/seng-360-encrypted-messaging-server/-/settings/integrations)
+- [ ] [Set up project integrations](https://gitlab.csc.uvic.ca/courses/2022091/SENG360_COSI/assignments/brennanmcmicking/seng360-encrypted-messaging-client/-/settings/integrations)
 
 ## Collaborate with your team
 
