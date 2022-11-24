@@ -17,7 +17,7 @@ def lambda_handler(event, context):
         msg_queue = json.loads(item.get("messageQueue"))
         msg_queue[str(datetime.utcnow())] = json.dumps({
             'message': message,
-            'sender': username.get('Attributes').get('userId'),
+            'sender': sender.get('Attributes').get('userId'),
         })
         res = dynamodb_resource.update_item(
             Key={
