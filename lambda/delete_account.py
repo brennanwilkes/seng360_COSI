@@ -7,21 +7,24 @@ def lambda_handler(event, context):
     except:
         return bad_request("failed to decode request body")
 
-    username = body.get('username')
+    # username = body.get('username')
     token = body.get('cookie')
 
-    if verify_token(username, token):
+    if verify_token(token):
         res = dynamodb_table.delete_item(Key={
-            "userId": username,
+            "token": token,
         })
 
-        if res.get('Attributes').get('userId') == username:
-            # success
-            return {
-                "statusCode": 200,
-                "body": json.dumps('Hello World')
-            }
-        else:
-            return server_error("failed to delete item")
+        
+        # Feels redundant to me IMO
+
+        # if res.get('Attributes').get('userId') == username:
+        #     # success
+        #     return {
+        #         "statusCode": 200,
+        #         "body": json.dumps('Hello World')
+        #     }
+        # else:
+        #     return server_error("failed to delete item")
 
     return bad_request("failed to verify cookie")

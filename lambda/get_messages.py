@@ -10,8 +10,8 @@ def lambda_handler(event, context):
     username = body.get('username')
     token = body.get('cookie')
     
-    if verify_token(username, token):
-        item = dynamodb_table.get_item(Key={ "userId": username }).get('Item')
+    if verify_token(token):
+        item = dynamodb_table.get_item(Key={ "token": token }).get('Item')
         res = dynamodb_resource.update_item(
             Key={
                 'userId': item.get('userId'),

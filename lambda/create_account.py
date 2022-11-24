@@ -46,8 +46,8 @@ def generate_token():
     return sha256(str(datetime.utcnow()) + 'super spicy secret :)',  usedforsecurity=True).hexdigest()
 
 
-def verify_token(username, token):
-    item = dynamodb_table.get_item(Key={ "userId": username }).get('Item')
+def verify_token(token):
+    item = dynamodb_table.get_item(Key={ "token": token }).get('Item')
     t: datetime = datetime.strptime(item.get('tokenCreated'))
     if (datetime.utcnow() - t).total_seconds() < 86400 and item.get('token') == token:
         # if cookie is younger than 24 hours
