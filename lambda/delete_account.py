@@ -1,21 +1,29 @@
 from common import *
 
 def lambda_handler(event, context):
-    body, token = parse_request(event)
+    r = parse_request(event)
+    if type(r) is dict:
+        return r
+    else:
+        body, token = r
 
-    token = body.get('cookie')
+    password = body.get('password')
 
-    if verify_token(token):
-        res = dynamodb_table.delete_item(Key={
-            "token": token,
-        })
+    item = verify_token(token)
+    if item is not None:
+        if item.get('password') == password:
+            res = dynamodb_table.delete_item(Key={
+                "userId": item.get("userId"),
+            })
 
-        logging.info(f'delete result: {res}')
+            logging.info(f'delete result: {res}')
 
-        if res.get('ResponseMetadata').get('HTTPStatusCode') == 200:
-            # success
-            return response(200, "successfully deleted account")
+            if res.get('ResponseMetadata').get('HTTPStatusCode') == 200:
+                # success
+                return response(200, "successfully deleted account")
+            else:
+                return server_error("failed to delete item", token)
         else:
-            return server_error("failed to delete item")
+            return bad_request("invalid credentials", token)
 
-    return bad_request("failed to verify cookie")
+    return bad_request("failed to verify cookie", token)

@@ -1,10 +1,14 @@
 from common import *
 
 def lambda_handler(event, context):
-    body, token = parse_request(event)
+    r = parse_request(event)
+    if type(r) is dict:
+        return r
+    else:
+        b, token = r
     
-    if verify_token(token):
-        item = dynamodb_table.get_item(Key={ "token": token }).get('Item')
+    item = verify_token(token)
+    if item is not None:
         res = dynamodb_table.update_item(
             Key={
                 'userId': item.get('userId'),
@@ -15,11 +19,8 @@ def lambda_handler(event, context):
             },
         )
         if not res:
-            return server_error("database update failed")
+            return server_error("database update failed", token)
         
-        return {
-            "statusCode": 200,
-            "body": item.get("messageQueue")
-        }
+        return response(200, item.get("messageQueue"), token)
 
-    return bad_request("failed to verify cookie")
+    return bad_request("failed to verify cookie", token)

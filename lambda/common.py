@@ -24,14 +24,6 @@ dynamodb_resource = boto3.resource(
 dynamodb_table = dynamodb_resource.Table(TABLE_NAME)
 
 def parse_request(event):
-    body = event.get("body")
-    logging.info(f'body before parse: {body}')
-    if type(body) is str:
-        try:
-            body = json.loads(event.get('body'))
-        except Exception as e:
-            return bad_request(f"failed to decode request body {e}")
-
     headers = event.get("headers")
     if type(headers) is str:
         try:
@@ -46,6 +38,14 @@ def parse_request(event):
             token = cookies[7:]
         except:
             token = None
+
+    body = event.get("body")
+    logging.info(f'body before parse: {body}')
+    if type(body) is str:
+        try:
+            body = json.loads(event.get('body'))
+        except Exception as e:
+            return bad_request(f"failed to decode request body {e}", token)
 
     return body, token
 
@@ -62,12 +62,12 @@ def response(status, data, token = None):
     return response
 
 
-def bad_request(message):
-    return response(400, {'error': message})
+def bad_request(message, token):
+    return response(400, {'error': message}, token)
 
 
-def server_error(message):
-    return response(500, {'error': message})
+def server_error(message, token):
+    return response(500, {'error': message}, token)
 
 
 def generate_token():
@@ -75,10 +75,12 @@ def generate_token():
 
 
 def verify_token(token):
-    item = dynamodb_table.get_item(Key={ "token": token }).get('Item')
-    t: datetime = datetime.strptime(item.get('tokenCreated'))
-    if (datetime.utcnow() - t).total_seconds() < 86400 and item.get('token') == token:
-        # if cookie is younger than 24 hours
-        return True
+    items = dynamodb_table.scan().get('Items')
+    for item in items:
+        if item.get('token') == token:
+            t: datetime = parser.parse(item.get('tokenCreated'))
+            if (datetime.utcnow() - t).total_seconds() < 86400:
+                # if cookie is younger than 24 hours
+                return item
     
-    return False
+    return None

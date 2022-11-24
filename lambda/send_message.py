@@ -2,26 +2,27 @@ import json
 from common import *
 
 def lambda_handler(event, context):
-    try:
-        body = json.loads(event.get('body'))
-    except:
-        return bad_request("failed to decode request body")
+    r = parse_request(event)
+    if type(r) is dict:
+        return r
+    else:
+        body, token = r
 
-    token = body.get('cookie')
     recipient = body.get('to')
     message = body.get('message')
     
-    if verify_token(token):
-        item = dynamodb_table.get_item(Key={ "userId": recipient }).get('Item')
-        sender = dynamodb_table.get_item(Key={ "token": token }).get('Item')
-        msg_queue = json.loads(item.get("messageQueue"))
+    sender = verify_token(token)
+    logging.info(f"verify_token result: {sender}")
+    if sender is not None:
+        recip_item = dynamodb_table.get_item(Key={ "userId": recipient }).get('Item')
+        msg_queue = json.loads(recip_item.get("messageQueue"))
         msg_queue[str(datetime.utcnow())] = json.dumps({
             'message': message,
-            'sender': sender.get('Attributes').get('userId'),
+            'sender': sender.get('userId'),
         })
-        res = dynamodb_resource.update_item(
+        res = dynamodb_table.update_item(
             Key={
-                'userId': item.get('userId'),
+                'userId': recip_item.get('userId'),
             },
             UpdateExpression='set messageQueue=:d',
             ExpressionAttributeValues={
@@ -29,11 +30,8 @@ def lambda_handler(event, context):
             },
         )
         if not res:
-            return server_error("database update failed")
+            return server_error("database update failed", token)
         
-        return {
-            "statusCode": 200,
-            "body": 'updated message queue'
-        }
+        return response(200, "updated message queue", token)
 
-    return bad_request("failed to verify cookie")
+    return bad_request("failed to verify cookie", token)

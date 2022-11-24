@@ -4,7 +4,11 @@ def lambda_handler(event, context):
     """
     Handler for calls to https://c11ipox830.execute-api.us-west-2.amazonaws.com/seng360/create_account
     """
-    body, t = parse_request(event)
+    r = parse_request(event)
+    if type(r) is dict:
+        return r
+    else:
+        body, t = r
     
     logging.info(body)
 
