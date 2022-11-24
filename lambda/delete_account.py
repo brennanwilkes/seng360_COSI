@@ -1,14 +1,13 @@
-import json
 from common import *
 
 def lambda_handler(event, context):
     body, token = parse_request(event)
 
-    username = body.get('username')
+    token = body.get('cookie')
 
-    if verify_token(username, token):
+    if verify_token(token):
         res = dynamodb_table.delete_item(Key={
-            "userId": username,
+            "token": token,
         })
 
         logging.info(f'delete result: {res}')

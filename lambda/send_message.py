@@ -7,17 +7,17 @@ def lambda_handler(event, context):
     except:
         return bad_request("failed to decode request body")
 
-    username = body.get('username')
     token = body.get('cookie')
     recipient = body.get('to')
     message = body.get('message')
     
-    if verify_token(username, token):
+    if verify_token(token):
         item = dynamodb_table.get_item(Key={ "userId": recipient }).get('Item')
+        sender = dynamodb_table.get_item(Key={ "token": token }).get('Item')
         msg_queue = json.loads(item.get("messageQueue"))
         msg_queue[str(datetime.utcnow())] = json.dumps({
             'message': message,
-            'sender': username,
+            'sender': sender.get('Attributes').get('userId'),
         })
         res = dynamodb_resource.update_item(
             Key={
