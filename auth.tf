@@ -14,6 +14,14 @@ resource "aws_iam_role_policy_attachment" "lambda-delete-account-seng360DynamoDb
   policy_arn = aws_iam_policy.seng360DynamoDb_iam_policy0.arn
   role       = aws_iam_role.lambda-delete-account-lambda-iam-role.name
 }
+resource "aws_iam_role_policy_attachment" "lambda-get-users-seng360DynamoDb_iam_policy-attachment" {
+  policy_arn = aws_iam_policy.seng360DynamoDb_iam_policy0.arn
+  role       = aws_iam_role.lambda-get-users-lambda-iam-role.name
+}
+resource "aws_iam_role_policy_attachment" "lambda-login-seng360DynamoDb_iam_policy-attachment" {
+  policy_arn = aws_iam_policy.seng360DynamoDb_iam_policy0.arn
+  role       = aws_iam_role.lambda-login-lambda-iam-role.name
+}
 
 
 resource "aws_vpc_endpoint" "dynamodb" {
