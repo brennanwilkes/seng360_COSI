@@ -54,19 +54,21 @@ def response(status, data, token = None):
         'statusCode': status,
         'headers': {
             'Access-Control-Allow-Origin': '*',
-            'Set-Cookie': f"cookie={token}",
         },
         'body': json.dumps(data),
     }
+    if token is not None:
+        response['headers']['Set-Cookie'] = f'cookie={token}'
+    
     logger.info(f' Generated response: {response}')
     return response
 
 
-def bad_request(message, token):
+def bad_request(message, token = None):
     return response(400, {'error': message}, token)
 
 
-def server_error(message, token):
+def server_error(message, token = None):
     return response(500, {'error': message}, token)
 
 
