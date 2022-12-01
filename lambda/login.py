@@ -8,7 +8,7 @@ def lambda_handler(event, context):
         body, token = r
 
     username = body.get("username")
-    password = body.get("password")
+    password = sha256(body.get("password").encode('ascii')).hexdigest()
 
     item = dynamodb_table.get_item(Key={ "userId": username }).get('Item')
     if password == item.get("password"):

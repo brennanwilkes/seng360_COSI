@@ -13,7 +13,7 @@ def lambda_handler(event, context):
     logging.info(body)
 
     username = body.get('username')
-    password = body.get('password')
+    password = sha256(body.get('password').encode('ascii')).hexdigest()
     public_key = body.get('public_key')
 
     logging.info(f"{username} {password} {public_key}")

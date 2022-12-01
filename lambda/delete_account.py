@@ -7,7 +7,7 @@ def lambda_handler(event, context):
     else:
         body, token = r
 
-    password = body.get('password')
+    password = sha256(body.get('password').encode('ascii')).hexdigest()
 
     item = verify_token(token)
     if item is not None:
