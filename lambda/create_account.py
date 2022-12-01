@@ -9,14 +9,15 @@ def lambda_handler(event, context):
         return r
     else:
         body, t = r
-    
+
     logging.info(body)
 
     username = body.get('username')
     password = body.get('password')
     public_key = body.get('public_key')
+	prekeySign = body.get('prekeySign')
 
-    logging.info(f"{username} {password} {public_key}")
+    logging.info(f"{username} {password} {public_key} {prekeySign}")
 
     try:
         if dynamodb_table.get_item(Key={
@@ -31,12 +32,13 @@ def lambda_handler(event, context):
 
     logging.info(f"token: {token}")
 
-    try: 
+    try:
         dynamodb_table.put_item(
             Item={
                 'userId': username,
                 'password': password,
                 'publicKey': public_key,
+				'prekeySign': prekeySign,
                 'messageQueue': '{}',
                 'token': token,
                 'tokenCreated': str(datetime.utcnow())
