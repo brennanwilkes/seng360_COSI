@@ -38,7 +38,7 @@ def lambda_handler(event, context):
                 'userId': username,
                 'password': password,
                 'publicKey': public_key,
-				'prekeySign': prekeySign,
+                'prekeySign': prekeySign,
                 'messageQueue': '{}',
                 'token': token,
                 'tokenCreated': str(datetime.utcnow())
