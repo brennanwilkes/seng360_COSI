@@ -1,3 +1,5 @@
+#API gateway configuration for lambda endpoints
+
 resource "aws_apigatewayv2_api" "lambda" {
   name          = "serverless_lambda_gw"
   protocol_type = "HTTP"

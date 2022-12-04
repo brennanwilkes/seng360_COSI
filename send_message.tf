@@ -1,3 +1,5 @@
+#Terraform configuration for the send message endpoint
+
 resource "aws_apigatewayv2_integration" "api_send_message" {
   api_id = aws_apigatewayv2_api.lambda.id
 

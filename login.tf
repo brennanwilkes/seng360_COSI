@@ -1,3 +1,5 @@
+#Terraform configuration for the login endpoint
+
 resource "aws_iam_role" "lambda-login-lambda-iam-role" {
   name               = "lambda-login-lambda-iam-role"
   assume_role_policy = "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Action\": \"sts:AssumeRole\",\n      \"Principal\": {\n        \"Service\": \"lambda.amazonaws.com\"\n      },\n      \"Effect\": \"Allow\",\n      \"Sid\": \"\"\n    }\n  ]\n}"

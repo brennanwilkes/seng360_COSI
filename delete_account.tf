@@ -1,3 +1,5 @@
+#Terraform configuration for the delete account endpoint
+
 resource "aws_apigatewayv2_integration" "api_delete_account" {
   api_id = aws_apigatewayv2_api.lambda.id
 

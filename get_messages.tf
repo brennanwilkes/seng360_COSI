@@ -1,3 +1,5 @@
+#Terraform configuration for the get messages endpoint
+
 resource "aws_apigatewayv2_integration" "api_get_messages" {
   api_id = aws_apigatewayv2_api.lambda.id
 

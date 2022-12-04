@@ -12,13 +12,17 @@ def lambda_handler(event, context):
 
     logging.info(body)
 
+    #Grab user provided information
     username = body.get('username')
+
+    #Ensure password is hashed to prevent the severity of data breechs
     password = sha256(body.get('password').encode('ascii')).hexdigest()
     public_key = body.get('public_key')
-	prekeySign = body.get('prekeySign')
+    prekeySign = body.get('prekeySign')
 
     logging.info(f"{username} {password} {public_key} {prekeySign}")
 
+    #Ensure user ID is new and unique
     try:
         if dynamodb_table.get_item(Key={
             "userId": username
@@ -32,6 +36,7 @@ def lambda_handler(event, context):
 
     logging.info(f"token: {token}")
 
+    #Save user to datastore
     try:
         dynamodb_table.put_item(
             Item={

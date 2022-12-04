@@ -1,3 +1,5 @@
+#Terraform configuration for the create account endpoint
+
 resource "aws_apigatewayv2_integration" "api_create_account" {
   api_id = aws_apigatewayv2_api.lambda.id
 

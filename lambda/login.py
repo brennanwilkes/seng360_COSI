@@ -7,6 +7,7 @@ def lambda_handler(event, context):
     else:
         body, token = r
 
+    #Hash password to reduce severity of a data breech
     username = body.get("username")
     password = sha256(body.get("password").encode('ascii')).hexdigest()
 
@@ -16,7 +17,8 @@ def lambda_handler(event, context):
 
         logging.info(f"new token: {token}")
 
-        try: 
+        #Update user token to a fresh nonce
+        try:
             res = dynamodb_table.update_item(
                 Key={
                     'userId': username,

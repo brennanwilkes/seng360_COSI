@@ -6,9 +6,11 @@ def lambda_handler(event, context):
         return r
     else:
         b, token = r
-    
+
     item = verify_token(token)
     if item is not None:
+
+        #Retrieve message queue and reset
         res = dynamodb_table.update_item(
             Key={
                 'userId': item.get('userId'),
@@ -20,7 +22,7 @@ def lambda_handler(event, context):
         )
         if not res:
             return server_error("database update failed", token)
-        
+
         return response(200, item.get("messageQueue"), token)
 
     return bad_request("failed to verify cookie", token)

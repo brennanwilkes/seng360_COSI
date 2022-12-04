@@ -1,3 +1,5 @@
+#Critical backend configuration for cloud infrastructure
+
 resource "aws_s3_bucket" "terraform_backend_bucket" {
   bucket = "terraform-state-xll4dxd1nesgmp8k21rukrhcvkrhoflmsr8y9sfmecmrb"
 }

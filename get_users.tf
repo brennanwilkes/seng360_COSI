@@ -1,3 +1,4 @@
+#Terraform configuration for the get users endpoint
 
 resource "aws_iam_role" "lambda-get-users-lambda-iam-role" {
   name               = "lambda-get-users-lambda-iam-role"
